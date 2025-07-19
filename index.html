@@ -271,7 +271,7 @@
 	</div>
 
 	<!-- Scripts -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
 	<script>
 		// PWA Install
@@ -304,7 +304,7 @@
                     const CACHE_NAME = 'qr-app-v1';
                     const urlsToCache = [
                         '/',
-                        'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js',
+                        'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js',
                         'https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js'
                     ];
 
@@ -361,19 +361,25 @@
 			const qrContainer = document.getElementById('qrcode');
 			qrContainer.innerHTML = '';
 
-			QRCode.toCanvas(qrContainer, text, {
-				width: 256,
-				height: 256,
-				color: {
-					dark: '#000000',
-					light: '#FFFFFF'
-				}
-			}, function (error) {
-				if (error) {
-					console.error(error);
-					alert('Error generating QR code');
-				}
-			});
+			try {
+				// Create canvas element
+				const canvas = document.createElement('canvas');
+				qrContainer.appendChild(canvas);
+
+				// Generate QR code using QRious
+				const qr = new QRious({
+					element: canvas,
+					value: text,
+					size: 256,
+					background: 'white',
+					foreground: 'black',
+					level: 'M'
+				});
+
+			} catch (error) {
+				console.error('Error generating QR code:', error);
+				qrContainer.innerHTML = '<p style="color: #dc2626; padding: 20px;">Error generating QR code. Please try again.</p>';
+			}
 		}
 
 		// QR Scanning
