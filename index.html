@@ -272,7 +272,7 @@
 
 	<!-- Scripts -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+	<script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
 	<script>
 		// PWA Install
 		let deferredPrompt;
@@ -305,7 +305,7 @@
                     const urlsToCache = [
                         '/',
                         'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js',
-                        'https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js'
+                        'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js'
                     ];
 
                     self.addEventListener('install', event => {
@@ -387,6 +387,7 @@
 		let canvasElement;
 		let canvas;
 		let scanning = false;
+		let stream;
 
 		function startScanning() {
 			const videoElement = document.getElementById('video');
@@ -395,22 +396,30 @@
 			const scanResult = document.getElementById('scanResult');
 			const scanError = document.getElementById('scanError');
 
+			// Hide previous results
 			scanResult.style.display = 'none';
 			scanError.style.display = 'none';
+
+			// Check if jsQR is loaded
+			if (typeof jsQR === 'undefined') {
+				scanError.textContent = 'QR scanner library not loaded. Please refresh the page.';
+				scanError.style.display = 'block';
+				return;
+			}
 
 			navigator.mediaDevices.getUserMedia({
 				video: {
 					facingMode: 'environment',
-					width: { ideal: 1280 },
-					height: { ideal: 720 }
+					width: { min: 640, ideal: 1280, max: 1920 },
+					height: { min: 480, ideal: 720, max: 1080 }
 				}
 			})
-				.then(function (stream) {
+				.then(function (mediaStream) {
+					stream = mediaStream;
 					video = videoElement;
 					video.srcObject = stream;
 					video.style.display = 'block';
 					video.setAttribute('playsinline', true);
-					video.play();
 
 					startBtn.style.display = 'none';
 					stopBtn.style.display = 'block';
@@ -420,19 +429,35 @@
 					canvasElement = document.createElement('canvas');
 					canvas = canvasElement.getContext('2d');
 
-					requestAnimationFrame(tick);
+					video.addEventListener('loadedmetadata', () => {
+						video.play();
+						requestAnimationFrame(tick);
+					});
 				})
 				.catch(function (err) {
 					console.error('Error accessing camera:', err);
-					scanError.textContent = 'Error accessing camera. Please make sure you have granted camera permissions and try again.';
+					let errorMsg = 'Error accessing camera. ';
+					if (err.name === 'NotAllowedError') {
+						errorMsg += 'Please allow camera access and try again.';
+					} else if (err.name === 'NotFoundError') {
+						errorMsg += 'No camera found on this device.';
+					} else {
+						errorMsg += 'Please make sure camera is available and try again.';
+					}
+					scanError.textContent = errorMsg;
 					scanError.style.display = 'block';
 				});
 		}
 
 		function tick() {
-			if (!scanning || !video) return;
+			if (!scanning || !video || video.readyState !== video.HAVE_ENOUGH_DATA) {
+				if (scanning) {
+					requestAnimationFrame(tick);
+				}
+				return;
+			}
 
-			if (video.readyState === video.HAVE_ENOUGH_DATA) {
+			try {
 				canvasElement.height = video.videoHeight;
 				canvasElement.width = video.videoWidth;
 				canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
@@ -442,14 +467,30 @@
 					inversionAttempts: "dontInvert",
 				});
 
-				if (code) {
+				if (code && code.data) {
+					console.log('QR Code detected:', code.data);
 					const scanResult = document.getElementById('scanResult');
-					scanResult.innerHTML = `<strong>QR Code detected:</strong><br><br>${code.data}`;
+					scanResult.innerHTML = `
+                        <strong>✅ QR Code Scanned Successfully!</strong><br><br>
+                        <div style="background: white; padding: 15px; border-radius: 10px; border: 1px solid #22c55e; word-break: break-all; font-family: monospace;">
+                            ${code.data}
+                        </div>
+                    `;
 					scanResult.style.display = 'block';
+
+					// Stop scanning after successful detection
 					stopScanning();
+
+					// Optional: vibrate if supported
+					if (navigator.vibrate) {
+						navigator.vibrate(200);
+					}
 					return;
 				}
+			} catch (error) {
+				console.error('Error processing video frame:', error);
 			}
+
 			requestAnimationFrame(tick);
 		}
 
@@ -459,8 +500,12 @@
 			const startBtn = document.getElementById('startScan');
 			const stopBtn = document.getElementById('stopScan');
 
-			if (video && video.srcObject) {
-				video.srcObject.getTracks().forEach(track => track.stop());
+			if (stream) {
+				stream.getTracks().forEach(track => track.stop());
+				stream = null;
+			}
+
+			if (video) {
 				video.srcObject = null;
 			}
 
