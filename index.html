@@ -427,7 +427,7 @@
 
 					// Create canvas for QR detection
 					canvasElement = document.createElement('canvas');
-					canvas = canvasElement.getContext('2d');
+					canvas = canvasElement.getContext('2d', { willReadFrequently: true });
 
 					video.addEventListener('loadedmetadata', () => {
 						video.play();
