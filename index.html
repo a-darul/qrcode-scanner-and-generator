@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>QR Code App</title>
+	<meta name="description" content="Generate and scan QR codes with ease">
+	<meta name="theme-color" content="#4F46E5">
+
+	<!-- PWA manifest -->
+	<link rel="manifest"
+		href="data:application/json;base64,eyJuYW1lIjoiUVIgQ29kZSBBcHAiLCJzaG9ydF9uYW1lIjoiUVIgQXBwIiwiZGVzY3JpcHRpb24iOiJHZW5lcmF0ZSBhbmQgc2NhbiBRUiBjb2RlcyIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMUYyOTM3IiwidGhlbWVfY29sb3IiOiIjNEY0NkU1IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1UazJJaUJvWldsbmFIUTlJakkxOGlCMmFXVjNRbTk0UFNJd0lEQWdNVGsySURJMU5pSWdabWxzYkQwaWJtOXVaU0lnZUcxc2JuTTlJbWgwZEhBNkx5OTNkM2N1ZHpNdWIzSm5Mekl3TURBdmMzWm5JajQ4Y21WamRDQjNhV1IwYUQwaU1UazJJaUJvWldsbmFIUTlJakkxTmlJZ1ptbHNiRDBpSXpSR05EWkZOU0lnY25nOUlqRXlJaUJwWkQwaVluZGRJaTgrUEhCaGRHZ2dabWxzYkQwaWQyaHBkR1VpSUdROUltMDBPQ0EwT0VneE5EaDBORFJXTVRBMFNERTFNblkyTkVneE5EUTE2VzgxTFRReUxqbDBNemdnUlRVZ05qUWdORGhUTkRrZ05EaGdNVEEwVmpFd05FaDBORFJhSWk4K1BIQmhkR2dnWm1sc2JEMGlJek16TXpNeUlpQmtQU0p0T1RZdU1rZzFPUzQzZGpnMFNEazJMakptTFM0MWRpMHVObGd6TkM0MWVqVXViR0V6TFdNM0xpNXBNekExTGpVaU1qZGdSaklnTmk0MkxUWXVOa0V5SXpZZk16QWdNREF3ZEMwNExqWWdNUzQyYUMweUxqSXhkaTQ0WlRjdU5pNHlkalVkTmpBaU5qQWdNREF3YkMweExqWWdPQzQyZWlJdlBqeDBaWGgwSUhnOUlqUTRJaUI1UFNJek1DSWdabWxzYkQwaWQyaHBkR1VpSUhSbGVIUXRZVzVqYUc5eVBTSnRhV1JrYkdVaUlHWnZiblF0YzJsNlpUMGlNVFJzZUN4elkybHVaR1VpSUhSbGVIUXRZWEp5WVc1blpUMGlZMlZ1ZEdWeUlnN2pWaUJEYjJSbFBDOTBaWGgwUGo0OEwzTjJaejQ9IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6IjE5NngxOTYifSx7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU5URXlJaUJvWldsbmFIUTlJalV4TWlJZ2RtbGxkMEp2ZUQwaU1DQXdJRFV4TWlBMU1USWlJR1pwYkd3OUltNXZibVVpSUhodGJHNXpQU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh5TURBd0wzTjJaeUkrUEhKbFkzUWdkMmxrZEdnOUlqVXhNaUlnYUdWcFoyaDBQU0kxTVRJaUlHWnBiR3c5SWlNMFJqUTJSVFVpSUhKNFBTSXpNaUlnYVdROUluQjNaRzFkSWk4K1BIQmhkR2dnWm1sc2JEMGlkMmhwZEdVaUlHUTlJbTB4TWpnZ01USTRTREkzTm5ZeU16aElNVGN5VmpNeVVENHZQVUpPT0RkeFJpMDNNekIxRUNBb0Z5OGdlRk15T1Mwc1lrNGdJQ0I2Y3pZZ01qY2dNakFrZGs0Z01qUkhNREV5UlROMUxUZ3hVU0Y2VlEwdE1UUTE3MTA5SWk4K1BIQmhkR2dnWm1sc2JEMGlJek16TXpNeUlpQmtQU0p0TWpVMkxqVXRNVGcxU0RFMk1IWXlNRGhJTWpVMkxqVk1NVFk0SURFd01TNVZkVzUzZDJSbGIyVWdPSkNDRER6MlZFQThVQUU4VWdBOEptNTlLUzVUYkZST0FnTVRSaTFZeUZOVkFsTVdSaTFZeUZOVkFsTVdSaTFZeUZOVkFsTWU1a2piWGgwWkRvZkkyRXRaalEwZUNBOUlqRXlPQ0lnZVQwaU9EVWlJR1pwYkd3OUluZG9hWFJsSUhSbGVIUXRZVzVqYUc5eVBTSmJlQ0lnWm05dWRDMXphWHBsUFNJMFJIQnhlaTQ2UUZQeElIUmxlSFF0WVhKeWYzRnpVVjFqSUhSbGVIUXFhMjVqdEM5c1pXTjBiR0V0TmpoQk1qZ2dKejVzWm5SUGNuRjBOU1dNTG5WeWJTRlBiMmRsUGo0OEwzTjJaejQ9IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6IjUxMng1MTIifV19">
+
+	<!-- Styles -->
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 20px;
+			color: #333;
+		}
+
+		.container {
+			max-width: 500px;
+			margin: 0 auto;
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 20px;
+			padding: 30px;
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+			backdrop-filter: blur(10px);
+		}
+
+		h1 {
+			text-align: center;
+			color: #4F46E5;
+			margin-bottom: 30px;
+			font-size: 2em;
+			font-weight: 700;
+		}
+
+		.tab-buttons {
+			display: flex;
+			margin-bottom: 30px;
+			border-radius: 12px;
+			overflow: hidden;
+			background: #f1f5f9;
+		}
+
+		.tab-btn {
+			flex: 1;
+			padding: 15px;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-size: 16px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+		}
+
+		.tab-btn.active {
+			background: #4F46E5;
+			color: white;
+		}
+
+		.tab-content {
+			display: none;
+			animation: fadeIn 0.3s ease;
+		}
+
+		.tab-content.active {
+			display: block;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.input-group {
+			margin-bottom: 20px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 8px;
+			font-weight: 600;
+			color: #374151;
+		}
+
+		input,
+		textarea {
+			width: 100%;
+			padding: 12px 16px;
+			border: 2px solid #e5e7eb;
+			border-radius: 10px;
+			font-size: 16px;
+			transition: border-color 0.3s ease;
+		}
+
+		input:focus,
+		textarea:focus {
+			outline: none;
+			border-color: #4F46E5;
+		}
+
+		textarea {
+			resize: vertical;
+			min-height: 100px;
+		}
+
+		.btn {
+			width: 100%;
+			padding: 15px;
+			background: linear-gradient(135deg, #4F46E5, #7C3AED);
+			color: white;
+			border: none;
+			border-radius: 10px;
+			font-size: 16px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+		}
+
+		.btn:active {
+			transform: translateY(0);
+		}
+
+		.btn:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		.qr-result {
+			margin-top: 30px;
+			text-align: center;
+		}
+
+		#qrcode {
+			margin: 20px auto;
+			padding: 20px;
+			background: white;
+			border-radius: 15px;
+			display: inline-block;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		}
+
+		#video {
+			width: 100%;
+			max-width: 400px;
+			border-radius: 15px;
+			margin: 20px auto;
+			display: block;
+		}
+
+		.scan-result {
+			margin-top: 20px;
+			padding: 20px;
+			background: #f0fdf4;
+			border: 2px solid #22c55e;
+			border-radius: 15px;
+			word-break: break-all;
+		}
+
+		.error {
+			margin-top: 20px;
+			padding: 15px;
+			background: #fef2f2;
+			border: 2px solid #ef4444;
+			border-radius: 15px;
+			color: #dc2626;
+		}
+
+		.install-prompt {
+			position: fixed;
+			bottom: 20px;
+			left: 20px;
+			right: 20px;
+			background: #1f2937;
+			color: white;
+			padding: 15px 20px;
+			border-radius: 15px;
+			display: none;
+			align-items: center;
+			justify-content: space-between;
+			z-index: 1000;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+		}
+
+		.install-prompt button {
+			background: #4F46E5;
+			color: white;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 600;
+		}
+
+		@media (max-width: 600px) {
+			.container {
+				margin: 0;
+				padding: 20px;
+				border-radius: 0;
+			}
+
+			body {
+				padding: 0;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h1>🔳 QR Code App</h1>
+
+		<div class="tab-buttons">
+			<button class="tab-btn active" onclick="showTab('generate')">Generate</button>
+			<button class="tab-btn" onclick="showTab('scan')">Scan</button>
+		</div>
+
+		<!-- Generate Tab -->
+		<div id="generate" class="tab-content active">
+			<div class="input-group">
+				<label for="textInput">Enter text to encode:</label>
+				<textarea id="textInput" placeholder="Type your text here..."></textarea>
+			</div>
+			<button class="btn" onclick="generateQR()">Generate QR Code</button>
+			<div class="qr-result">
+				<div id="qrcode"></div>
+			</div>
+		</div>
+
+		<!-- Scan Tab -->
+		<div id="scan" class="tab-content">
+			<button class="btn" id="startScan" onclick="startScanning()">Start Camera</button>
+			<button class="btn" id="stopScan" onclick="stopScanning()" style="display: none; background: #ef4444;">Stop
+				Camera</button>
+			<video id="video" style="display: none;"></video>
+			<div id="scanResult" class="scan-result" style="display: none;"></div>
+			<div id="scanError" class="error" style="display: none;"></div>
+		</div>
+	</div>
+
+	<!-- Install Prompt -->
+	<div class="install-prompt" id="installPrompt">
+		<span>Install this app for a better experience!</span>
+		<button onclick="installApp()">Install</button>
+		<button onclick="dismissInstall()" style="background: transparent; border: 1px solid #666;">Dismiss</button>
+	</div>
+
+	<!-- Scripts -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+	<script>
+		// PWA Install
+		let deferredPrompt;
+
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+			deferredPrompt = e;
+			document.getElementById('installPrompt').style.display = 'flex';
+		});
+
+		function installApp() {
+			if (deferredPrompt) {
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then((choiceResult) => {
+					deferredPrompt = null;
+					document.getElementById('installPrompt').style.display = 'none';
+				});
+			}
+		}
+
+		function dismissInstall() {
+			document.getElementById('installPrompt').style.display = 'none';
+		}
+
+		// Service Worker Registration
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				const swContent = `
+                    const CACHE_NAME = 'qr-app-v1';
+                    const urlsToCache = [
+                        '/',
+                        'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js',
+                        'https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js'
+                    ];
+
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => response || fetch(event.request))
+                        );
+                    });
+                `;
+
+				const blob = new Blob([swContent], { type: 'application/javascript' });
+				const swUrl = URL.createObjectURL(blob);
+
+				navigator.serviceWorker.register(swUrl)
+					.then(registration => console.log('SW registered'))
+					.catch(error => console.log('SW registration failed'));
+			});
+		}
+
+		// Tab switching
+		function showTab(tabName) {
+			document.querySelectorAll('.tab-content').forEach(tab => {
+				tab.classList.remove('active');
+			});
+			document.querySelectorAll('.tab-btn').forEach(btn => {
+				btn.classList.remove('active');
+			});
+
+			document.getElementById(tabName).classList.add('active');
+			event.target.classList.add('active');
+
+			// Stop scanning when switching away from scan tab
+			if (tabName !== 'scan') {
+				stopScanning();
+			}
+		}
+
+		// QR Generation
+		function generateQR() {
+			const text = document.getElementById('textInput').value.trim();
+			if (!text) {
+				alert('Please enter some text to generate QR code');
+				return;
+			}
+
+			const qrContainer = document.getElementById('qrcode');
+			qrContainer.innerHTML = '';
+
+			QRCode.toCanvas(qrContainer, text, {
+				width: 256,
+				height: 256,
+				color: {
+					dark: '#000000',
+					light: '#FFFFFF'
+				}
+			}, function (error) {
+				if (error) {
+					console.error(error);
+					alert('Error generating QR code');
+				}
+			});
+		}
+
+		// QR Scanning
+		let video;
+		let canvasElement;
+		let canvas;
+		let scanning = false;
+
+		function startScanning() {
+			const videoElement = document.getElementById('video');
+			const startBtn = document.getElementById('startScan');
+			const stopBtn = document.getElementById('stopScan');
+			const scanResult = document.getElementById('scanResult');
+			const scanError = document.getElementById('scanError');
+
+			scanResult.style.display = 'none';
+			scanError.style.display = 'none';
+
+			navigator.mediaDevices.getUserMedia({
+				video: {
+					facingMode: 'environment',
+					width: { ideal: 1280 },
+					height: { ideal: 720 }
+				}
+			})
+				.then(function (stream) {
+					video = videoElement;
+					video.srcObject = stream;
+					video.style.display = 'block';
+					video.setAttribute('playsinline', true);
+					video.play();
+
+					startBtn.style.display = 'none';
+					stopBtn.style.display = 'block';
+					scanning = true;
+
+					// Create canvas for QR detection
+					canvasElement = document.createElement('canvas');
+					canvas = canvasElement.getContext('2d');
+
+					requestAnimationFrame(tick);
+				})
+				.catch(function (err) {
+					console.error('Error accessing camera:', err);
+					scanError.textContent = 'Error accessing camera. Please make sure you have granted camera permissions and try again.';
+					scanError.style.display = 'block';
+				});
+		}
+
+		function tick() {
+			if (!scanning || !video) return;
+
+			if (video.readyState === video.HAVE_ENOUGH_DATA) {
+				canvasElement.height = video.videoHeight;
+				canvasElement.width = video.videoWidth;
+				canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+
+				const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+				const code = jsQR(imageData.data, imageData.width, imageData.height, {
+					inversionAttempts: "dontInvert",
+				});
+
+				if (code) {
+					const scanResult = document.getElementById('scanResult');
+					scanResult.innerHTML = `<strong>QR Code detected:</strong><br><br>${code.data}`;
+					scanResult.style.display = 'block';
+					stopScanning();
+					return;
+				}
+			}
+			requestAnimationFrame(tick);
+		}
+
+		function stopScanning() {
+			scanning = false;
+			const videoElement = document.getElementById('video');
+			const startBtn = document.getElementById('startScan');
+			const stopBtn = document.getElementById('stopScan');
+
+			if (video && video.srcObject) {
+				video.srcObject.getTracks().forEach(track => track.stop());
+				video.srcObject = null;
+			}
+
+			videoElement.style.display = 'none';
+			startBtn.style.display = 'block';
+			stopBtn.style.display = 'none';
+		}
+
+		// Auto-focus text input when generate tab is shown
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById('textInput').focus();
+		});
+	</script>
+</body>
+
+</html>
